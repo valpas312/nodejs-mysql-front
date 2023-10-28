@@ -1,0 +1,1 @@
+export const API_URL = 'https://wonderful-gold-production.up.railway.app/api'
