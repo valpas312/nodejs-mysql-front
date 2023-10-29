@@ -18,7 +18,7 @@ const Login = () => {
   const { mutate, error, data } = useMutation({
     mutationKey: ["login"],
     mutationFn: () => axios.post(`${API_URL}/login`, { email, password })
-      .then((res) => console.log(res.data))
+      .then((res) => console.log(res.data[0]))
       .catch((err) => {
         throw new Error(err.response.data.message);
       })
