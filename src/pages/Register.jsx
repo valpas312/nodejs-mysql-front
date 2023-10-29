@@ -18,8 +18,8 @@ const Register = () => {
 
   const { mutate, error, data } = useMutation({
     mutationKey: ["login"],
-    mutationFn: () => axios.post(`${API_URL}/register`, { name, email, password, salary: 0 })
-      .then((res) => console.log(res.data))
+    mutationFn: () => axios.post(`${API_URL}/register`, { name, email, password, salary: "0" })
+      .then((res) => console.log(res.data[0]))
       .catch((err) => {
         throw new Error(err.response.data.message);
       })
