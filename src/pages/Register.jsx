@@ -9,17 +9,19 @@ import {
   Input,
   Box,
   Button,
+  Spinner
 } from "@chakra-ui/react";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [spinner, setSpinner] = useState(false);
 
   const { mutate, error, data } = useMutation({
     mutationKey: ["login"],
     mutationFn: () => axios.post(`${API_URL}/register`, { name, email, password, salary: "0" })
-      .then((res) => console.log(res.data[0]))
+      .then((res) => console.log(res.data))
       .catch((err) => {
         throw new Error(err.response.data.message);
       })
@@ -38,7 +40,14 @@ const Register = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    mutate();
+    mutate({},{
+      onSuccess: () => {
+        setSpinner(false);
+      },
+      onError: () => {
+        setSpinner(false);
+      },
+    });
   };
   return (
     <Box as="form" onSubmit={handleSubmit}>
@@ -61,6 +70,7 @@ const Register = () => {
 
       <Button type="submit">Submit</Button>
 
+      {spinner && <Spinner />}
       {error && <p>Error: {error.message}</p>}
       {data && <p>{data.message}</p>}
     </Box>

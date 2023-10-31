@@ -9,11 +9,13 @@ import {
   Input,
   Box,
   Button,
+  Spinner
 } from "@chakra-ui/react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [spinner, setSpinner] = useState(false);
 
   const { mutate, error, data } = useMutation({
     mutationKey: ["login"],
@@ -35,7 +37,17 @@ const Login = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    mutate();
+    setSpinner(true);
+    mutate({},
+      {
+        onSuccess: () => {
+          setSpinner(false);
+        },
+        onError: () => {
+          setSpinner(false);
+        },
+      }
+      );
   };
   return (
     <Box as="form" onSubmit={handleSubmit}>
@@ -52,6 +64,7 @@ const Login = () => {
 
       <Button type="submit">Submit</Button>
 
+      {spinner && <Spinner />}
       {error && <p>Error: {error.message}</p>}
       {data && <p>{data.message}</p>}
     </Box>
