@@ -7,20 +7,21 @@ import {
   FormLabel,
   FormHelperText,
   Input,
-  Box,
-  Button,
-  Spinner
 } from "@chakra-ui/react";
+import Form from "../components/Form";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [spinner, setSpinner] = useState(false);
+  const [id, setId] = useState("");
+  const navigate = useNavigate();
 
   const { mutate, error, data } = useMutation({
     mutationKey: ["login"],
     mutationFn: () => axios.post(`${API_URL}/login`, { email, password })
-      .then((res) => console.log(res.data[0]))
+      .then((res) => setId(res.data[0].id))
       .catch((err) => {
         throw new Error(err.response.data.message);
       })
@@ -42,6 +43,7 @@ const Login = () => {
       {
         onSuccess: () => {
           setSpinner(false);
+          navigate(`/perfil/${id}`);
         },
         onError: () => {
           setSpinner(false);
@@ -50,7 +52,7 @@ const Login = () => {
       );
   };
   return (
-    <Box as="form" onSubmit={handleSubmit}>
+    <Form handleSubmit={handleSubmit} spinner={spinner} error={error} data={data}>
       <FormControl isRequired id="email">
         <FormLabel>Email address</FormLabel>
         <Input name="email" type="email" onChange={handleOnChange} />
@@ -61,13 +63,7 @@ const Login = () => {
         <FormLabel>Password</FormLabel>
         <Input name="password" type="password" onChange={handleOnChange} />
       </FormControl>
-
-      <Button type="submit">Submit</Button>
-
-      {spinner && <Spinner />}
-      {error && <p>Error: {error.message}</p>}
-      {data && <p>{data.message}</p>}
-    </Box>
+    </Form>
   );
 };
 

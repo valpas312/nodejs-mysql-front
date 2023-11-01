@@ -2,21 +2,21 @@ import { useState } from "react";
 import { API_URL } from "../utils/constantes";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
+import Form from "../components/Form";
 import {
   FormControl,
   FormLabel,
   FormHelperText,
   Input,
-  Box,
-  Button,
-  Spinner
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [spinner, setSpinner] = useState(false);
+  const navigate = useNavigate();
 
   const { mutate, error, data } = useMutation({
     mutationKey: ["login"],
@@ -43,6 +43,7 @@ const Register = () => {
     mutate({},{
       onSuccess: () => {
         setSpinner(false);
+        navigate("/login");
       },
       onError: () => {
         setSpinner(false);
@@ -50,30 +51,21 @@ const Register = () => {
     });
   };
   return (
-    <Box as="form" onSubmit={handleSubmit}>
+    <Form handleSubmit={handleSubmit} spinner={spinner} error={error} data={data}>
       <FormControl isRequired id="name">
         <FormLabel>Name</FormLabel>
-        <Input name="name" type="name" onChange={handleOnChange} />
-        <FormHelperText>We`ll never share your name.</FormHelperText>
+        <Input name="name" type="text" onChange={handleOnChange} />
       </FormControl>
-
       <FormControl isRequired id="email">
         <FormLabel>Email address</FormLabel>
         <Input name="email" type="email" onChange={handleOnChange} />
         <FormHelperText>We`ll never share your email.</FormHelperText>
       </FormControl>
-
       <FormControl isRequired id="password">
         <FormLabel>Password</FormLabel>
         <Input name="password" type="password" onChange={handleOnChange} />
       </FormControl>
-
-      <Button type="submit">Submit</Button>
-
-      {spinner && <Spinner />}
-      {error && <p>Error: {error.message}</p>}
-      {data && <p>{data.message}</p>}
-    </Box>
+    </Form>
   );
 };
 
