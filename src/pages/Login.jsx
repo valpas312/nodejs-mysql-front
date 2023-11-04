@@ -15,17 +15,15 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [spinner, setSpinner] = useState(false);
-  const [id, setId] = useState("");
   const navigate = useNavigate();
 
   const { mutate, error, data } = useMutation({
     mutationKey: ["login"],
     mutationFn: () => axios.post(`${API_URL}/login`, { email, password })
-      .then((res) => setId(res.data[0].id))
+      .then((res) => res.data)
       .catch((err) => {
         throw new Error(err.response.data.message);
       })
-    ,
   });
 
   const handleOnChange = (event) => {
@@ -41,9 +39,9 @@ const Login = () => {
     setSpinner(true);
     mutate({},
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           setSpinner(false);
-          navigate(`/perfil/${id}`);
+          navigate(`/perfil/${data[0].id}`)
         },
         onError: () => {
           setSpinner(false);
